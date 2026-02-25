@@ -28,11 +28,11 @@ const schemeFromBundleId = `manus${timestamp}`;
 
 const env = {
   // App branding - update these values directly (do not use env vars)
-  appName: "Robot Teaching Knowledge App",
+  appName: "Robot Teaching",
   appSlug: "robot-teaching-knowledge",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "",
+  logoUrl: "https://private-us-east-1.manuscdn.com/sessionFile/gdNr2KOy9FBvZeYupOyuME/sandbox/kf92dBVbKi7Shga4GyniIz-img-1_1771981004000_na1fn_YXBwLWljb24.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvZ2ROcjJLT3k5RkJ2WmVZdXBPeXVNRS9zYW5kYm94L2tmOTJkQlZiS2k3U2hnYTRHeW5pSXotaW1nLTFfMTc3MTk4MTAwNDAwMF9uYTFmbl9ZWEJ3TFdsamIyNC5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=DwF0L75ej7cw3quDHbDU9AkAvVT23VyQL5KaEr~HdykSJ-F4KoYNSU8-AX8fnjX3MCeWfcvfk-HZ65aPkkX5976h8-GkC39nialONP-v3rSVcI9711nk~MV0N5RJOoJ~YT299dMve32Aa7C1CYab72hqEthDbheetvYIsm8xoI8xJcwTvpFTrX4T2d3swaMAysLuvzrNyW6-5Gv~HEJW8EfwCi~imMqGG2FmgVhVVnlOzlI3iafzRA1zno82x9smfdEp73ce9dsVSx4QHVKdH~hVaVasQsUuALOPqG8EQIYOumrMCRWC8jwxx3ZgaZe08kIKPUeHHGeok7N4ia3QZQ__",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
