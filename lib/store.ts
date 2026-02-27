@@ -22,7 +22,7 @@ function generateCaseId(existingCases: Case[]): string {
 }
 
 // ---- 永続化 ----
-async function loadCases(): Promise<Case[]> {
+export async function loadCases(): Promise<Case[]> {
   try {
     const raw = await AsyncStorage.getItem(CASES_KEY);
     if (!raw) return [];

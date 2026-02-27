@@ -9,6 +9,8 @@ import { Platform } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { CasesProvider } from "@/lib/cases-context";
+import { FirebaseAuthProvider } from "@/lib/firebase-auth-context";
+import { FirebaseCasesProvider } from "@/lib/firebase-cases-context";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -81,23 +83,28 @@ export default function RootLayout() {
 
   const content = (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
-          {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
-          {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
-          <CasesProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="oauth/callback" />
-            <Stack.Screen name="case/new" />
-            <Stack.Screen name="case/[id]" />
-            <Stack.Screen name="case/edit/[id]" />
-          </Stack>
-          <StatusBar style="auto" />
-          </CasesProvider>
-        </QueryClientProvider>
-      </trpc.Provider>
+      <FirebaseAuthProvider>
+        <FirebaseCasesProvider>
+          <trpc.Provider client={trpcClient} queryClient={queryClient}>
+            <QueryClientProvider client={queryClient}>
+              {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
+              {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
+              {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
+              <CasesProvider>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="oauth/callback" />
+                <Stack.Screen name="case/new" />
+                <Stack.Screen name="case/[id]" />
+                <Stack.Screen name="case/edit/[id]" />
+                <Stack.Screen name="auth/login" />
+              </Stack>
+              <StatusBar style="auto" />
+              </CasesProvider>
+            </QueryClientProvider>
+          </trpc.Provider>
+        </FirebaseCasesProvider>
+      </FirebaseAuthProvider>
     </GestureHandlerRootView>
   );
 

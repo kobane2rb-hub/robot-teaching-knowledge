@@ -37,8 +37,11 @@ const MAPPING = {
   "person.2": "group",
   "building.2": "business",
   "gearshape": "settings",
+  "gear": "settings",
   "arrow.up.right.square": "open-in-new",
   "doc.on.clipboard": "content-copy",
+  "rectangle.portrait.and.arrow.right": "logout",
+  "chevron.left": "chevron-left",
 } as IconMapping;
 
 /**

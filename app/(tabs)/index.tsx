@@ -12,6 +12,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Platform,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -20,6 +21,7 @@ import { CaseCard } from "@/components/case-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useCases } from "@/lib/cases-context";
 import { useColors } from "@/hooks/use-colors";
+import { useFirebaseAuth } from "@/lib/firebase-auth-context";
 import type { FilterState, CaseType, LevelType } from "@/lib/types";
 
 const ALL_TYPES: CaseType[] = ["新規", "機種追加", "改造"];
@@ -29,6 +31,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { user, logout } = useFirebaseAuth();
   const { filteredCases, filter, setFilter, loading } = useCases();
   const [searchText, setSearchText] = useState(filter.searchText);
 
@@ -78,14 +81,45 @@ export default function HomeScreen() {
 
   const fabBottom = Platform.OS === "web" ? 24 : insets.bottom + 80;
 
+  const handleLogout = async () => {
+    Alert.alert("ログアウト", "ログアウトしますか？", [
+      { text: "キャンセル", style: "cancel" },
+      {
+        text: "ログアウト",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await logout();
+            router.replace("/");
+          } catch (error) {
+            Alert.alert("エラー", "ログアウトに失敗しました");
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <ScreenContainer containerClassName="bg-background">
       {/* ヘッダー */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-        <Text style={[styles.title, { color: colors.foreground }]}>案件一覧</Text>
-        <Text style={[styles.count, { color: colors.muted }]}>
-          {filteredCases.length} 件
-        </Text>
+        <View>
+          <Text style={[styles.title, { color: colors.foreground }]}>案件一覧</Text>
+          {user && (
+            <Text style={[{ fontSize: 11, color: colors.muted, marginTop: 2 }]}>{user.email}</Text>
+          )}
+        </View>
+        <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+          <Text style={[styles.count, { color: colors.muted }]}>
+            {filteredCases.length} 件
+          </Text>
+          <Pressable
+            onPress={handleLogout}
+            style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1 }]}
+          >
+            <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color={colors.primary} />
+          </Pressable>
+        </View>
       </View>
 
       {/* 検索バー */}
