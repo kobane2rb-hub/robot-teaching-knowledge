@@ -60,6 +60,8 @@ Thumbs.db
 *.tgz
 *.tar.gz
 .cache/
+node_modules/.cache/
+node_modules/*/.cache/
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
