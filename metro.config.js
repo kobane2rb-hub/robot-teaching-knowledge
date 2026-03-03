@@ -3,6 +3,12 @@ const { withNativeWind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
+// Add blockList to exclude problematic cache directories
+config.resolver.blockList = [
+  /.*\/\.cache\/.*/,
+  /.*\/node_modules\/react-native-css-interop\/.cache\/.*/,
+];
+
 module.exports = withNativeWind(config, {
   input: "./global.css",
   // Force write CSS to file system instead of virtual modules
