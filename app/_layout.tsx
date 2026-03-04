@@ -1,6 +1,6 @@
 import "@/global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, useSegments, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -9,7 +9,7 @@ import { Platform } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { CasesProvider } from "@/lib/cases-context";
-import { FirebaseAuthProvider } from "@/lib/firebase-auth-context";
+import { FirebaseAuthProvider, useFirebaseAuth } from "@/lib/firebase-auth-context";
 import { FirebaseCasesProvider } from "@/lib/firebase-cases-context";
 import {
   SafeAreaFrameContext,
@@ -28,6 +28,38 @@ const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
 export const unstable_settings = {
   anchor: "(tabs)",
 };
+
+// ログイン状態に基づいてリダイレクトを処理するコンポーネント
+function RootLayoutNav() {
+  const { user, loading } = useFirebaseAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading) return;
+
+    const inAuthGroup = segments[0] === "auth";
+
+    if (!user && !inAuthGroup) {
+      // ログインしていない場合、ログイン画面にリダイレクト
+      router.replace("/auth/login");
+    } else if (user && inAuthGroup) {
+      // ログインしている場合、ホーム画面にリダイレクト
+      router.replace("/");
+    }
+  }, [user, loading, segments, router]);
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="oauth/callback" />
+      <Stack.Screen name="case/new" />
+      <Stack.Screen name="case/[id]" />
+      <Stack.Screen name="case/edit/[id]" />
+      <Stack.Screen name="auth/login" />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const initialInsets = initialWindowMetrics?.insets ?? DEFAULT_WEB_INSETS;
@@ -87,19 +119,9 @@ export default function RootLayout() {
         <FirebaseCasesProvider>
           <trpc.Provider client={trpcClient} queryClient={queryClient}>
             <QueryClientProvider client={queryClient}>
-              {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
-              {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
-              {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
               <CasesProvider>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="oauth/callback" />
-                <Stack.Screen name="case/new" />
-                <Stack.Screen name="case/[id]" />
-                <Stack.Screen name="case/edit/[id]" />
-                <Stack.Screen name="auth/login" />
-              </Stack>
-              <StatusBar style="auto" />
+                <RootLayoutNav />
+                <StatusBar style="auto" />
               </CasesProvider>
             </QueryClientProvider>
           </trpc.Provider>
