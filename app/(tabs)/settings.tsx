@@ -30,7 +30,7 @@ export default function SettingsScreen() {
         onPress: async () => {
           try {
             await logout();
-            router.replace("/");
+            router.replace("/auth/login");
           } catch (error) {
             Alert.alert("エラー", "ログアウトに失敗しました");
           }
