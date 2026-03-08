@@ -5,8 +5,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
@@ -28,17 +26,6 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // リダイレクト結果を確認
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          setUser(result.user);
-        }
-      })
-      .catch((error) => {
-        console.error("リダイレクト結果エラー:", error);
-      });
-
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -50,12 +37,8 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
   const signInWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      // Web 環境では signInWithRedirect を使用
-      if (typeof window !== "undefined") {
-        await signInWithRedirect(auth, provider);
-      } else {
-        await signInWithPopup(auth, provider);
-      }
+      const result = await signInWithPopup(auth, provider);
+      setUser(result.user);
     } catch (error) {
       console.error("Google ログインエラー:", error);
       throw error;
@@ -65,6 +48,7 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
   const logout = async () => {
     try {
       await signOut(auth);
+      setUser(null);
     } catch (error) {
       console.error("ログアウトエラー:", error);
       throw error;
